@@ -6,8 +6,8 @@ import pandas as pd
 # embed static images in the ipynb
 get_ipython().run_line_magic('matplotlib', 'inline')
 
-train_df = pd.read_csv("training.csv", header=None)
-test_df = pd.read_csv("testing.csv", header=None)
+train_df = pd.read_csv("datasets/FB_comments/training.csv", header=None)
+test_df = pd.read_csv("datasets/FB_comments/testing.csv", header=None)
 print("Original dataset shapes\n"
      +f"Training set:{train_df.shape}, Testing set:{test_df.shape}")
 train_df.head()
@@ -22,8 +22,8 @@ train_df.head()
 
 # integer_check(vec=np.array(train_df.iloc[:,-1]))
 
-train = np.array(train)
-test = np.array(test)
+train = np.array(train_df)
+test = np.array(test_df)
 X_train, Y_train = train[:,:-1], train[:,-1] 
 X_test, Y_test = test[:,:-1], test[:,-1]
 
@@ -36,7 +36,7 @@ def scale_features(X_train, X_test):
 scale_features(X_train, X_test)
 
 reduction_method = "pca"
-reduction_method = "kbest"
+# reduction_method = "kbest"
 
 if reduction_method == "pca":
     # Principal component analysis (PCA) feature reduction
@@ -49,7 +49,8 @@ elif reduction_method == "kbest":
     # SelectKBest feature selection
     from sklearn.feature_selection import SelectKBest, f_regression
     X_train = SelectKBest(f_regression, k=10).fit_transform(X_train, Y_train)
-
+    X_test = SelectKBest(f_regression, k=10).transform(X_test)
+    
 rng = np.random.RandomState(5)
 def random_shrink(X, Y, shrink=0.5):
     """Shrinks the dataset size.
@@ -63,7 +64,11 @@ def random_shrink(X, Y, shrink=0.5):
     Returns:
         X_small, Y_small : Random samples of the input sets
     """
-    n_samples = X.shape[0] 
+    n_samples = X.shape[0]
+#     if n_samples % 2 == 0:
+#         n_samples = n_samples
+#     elif n_samples % 2 == 1:
+#         n_samples -= 1 
     sorted_indices = np.arange(n_samples)
     random_indices = rng.choice(sorted_indices, int(shrink * n_samples))
     X_small = X[random_indices]
@@ -76,8 +81,11 @@ print("Dataset shapes after PCA and random sampling\n"
      +f"X_train.shape:{X_train.shape}, Y_train.shape:{Y_train.shape}\n"
      +f"X_test.shape:{X_test.shape}, Y_test.shape:{Y_test.shape}")
 
-def present_data:
+def present_data():
     return X_train, Y_train, X_test, Y_test
 
-present_data()
+# Use the following line in the output file to read use these variables
+# exec(open(<filename.py>).read())
+[X_train, Y_train, X_test, Y_test] = [A for A in present_data()]
+
 
